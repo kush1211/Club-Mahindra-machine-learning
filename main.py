@@ -112,53 +112,25 @@ def predict(X):
 with open("style.css") as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
-app_mode = option_menu(
-    menu_title=None,
-    options=["Home", "Prediction"],
-    icons=["house-door", "graph-up-arrow"],
-    orientation="horizontal",
-    styles={
-        "container": {
-                "padding": "0!important",
-        },
-        "icon": {
-            "font-size": "20px",
-        },
-        "nav-link": {
-            "font-size": "20px",
-            "margin": "0px",
-            "padding": "7px 0 7px 0",
-        },
-        "nav-link-selected": {
-            "font-weight": "100",
-        }
-    }
-)
+st.header("Model Prediction")
 
-# Home Page
-if app_mode == "Home":
-   pass
-# Prediction Page
-elif app_mode == "Prediction":
-    st.header("Model Prediction")
+uploaded_file = st.file_uploader("Upload a CSV file", type=["csv"])
 
-    uploaded_file = st.file_uploader("Upload a CSV file", type=["csv"])
-
-    if uploaded_file is not None:
-
-        df = pd.read_csv(uploaded_file)
-        st.write("Uploaded CSV data:")
-        st.write(df)
-        
-        df,reservation_id = preprocessing(df)
-        predicted_data = predict(df)
-        new_df = pd.DataFrame({"reservation_id":reservation_id,"answer":predicted_data})
-        st.write("Prerdicted data:")
-        st.write(new_df)
-        csv = new_df.to_csv(index=False)
-        st.download_button(
-            label="Download CSV",
-            data=csv,
-            file_name='data.csv',
-            mime='text/csv'
-        )
+if uploaded_file is not None:
+    df = pd.read_csv(uploaded_file)
+    st.write("Uploaded CSV data:")
+    st.write(df)
+    
+    df, reservation_id = preprocessing(df)
+    predicted_data = predict(df)
+    new_df = pd.DataFrame({"reservation_id": reservation_id, "answer": predicted_data})
+    st.write("Predicted data:")
+    st.write(new_df)
+    
+    csv = new_df.to_csv(index=False)
+    st.download_button(
+        label="Download CSV",
+        data=csv,
+        file_name='data.csv',
+        mime='text/csv'
+    )
